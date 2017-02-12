@@ -16,8 +16,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 
@@ -45,10 +47,12 @@ public class MovieFragment extends Fragment {
 
     final String LOG_TAG = "MovieFragment ::::";
     final String POPULAR_QUERY = "https://api.themoviedb.org/3/discover/movie?api_key=61e87f5514f6028779a53b20565c9a4c&language=en-US&sort_by=popularity.desc";
-    final String HIGHEST_RATED_QUERY = "https://api.themoviedb.org/3/discover/movie?api_key=61e87f5514f6028779a53b20565c9a4c&vote_count.gte=1000&sort_by=vote_average.desc";
+    final String HIGHEST_RATED_QUERY = "https://api.themoviedb.org/3/discover/movie?api_key=61e87f5514f6028779a53b20565c9a4c&vote_count.gte=500&sort_by=vote_average.desc";
     final String THUMBNAIL_QUERY = "https://image.tmdb.org/t/p/w154";
 
     final int mColumnCount = 4;
+
+    private boolean userSelected = false;
 
     MyMovieRecyclerViewAdapter mMyMovieRecyclerViewAdapter;
     RecyclerView recyclerView;
@@ -76,16 +80,27 @@ public class MovieFragment extends Fragment {
         inflater.inflate(R.menu.movie_menu, menu);
         MenuItem filterItem = menu.findItem(R.id.movie_filter);
         Spinner spinner = (Spinner)MenuItemCompat.getActionView(filterItem);
+
+        spinner.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                userSelected = true;
+                return false;
+            }
+        });
         spinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                if (position == 0) {
-                    sharedPreferences.edit().putString("filter", "popular").commit();
+                //position == 0 is for Title placeholder
+                if (position == 1 && userSelected) {
+                    sharedPreferences.edit().putString("filter", "popular").apply();
                     updateMovies();
-                } else if (position == 1) {
-                    sharedPreferences.edit().putString("filter", "highest_rated").commit();
+                    userSelected = false;
+                } else if (position == 2 && userSelected) {
+                    sharedPreferences.edit().putString("filter", "highest_rated").apply();
                     updateMovies();
+                    userSelected = false;
                 }
             }
 
@@ -98,11 +113,8 @@ public class MovieFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_spinner) {
-            return true;
-        }
+        return item.getItemId() == R.id.action_spinner || super.onOptionsItemSelected(item);
 
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

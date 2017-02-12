@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="filter_selection">
+        <item>Movie Filter</item>
         <item>Most Popular</item>
         <item>Highest Rated</item>
     </string-array>

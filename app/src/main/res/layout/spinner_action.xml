@@ -4,4 +4,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/action_spinner"
-    android:entries="@array/filter_selection" />
+    android:entries="@array/filter_selection"
+    />
