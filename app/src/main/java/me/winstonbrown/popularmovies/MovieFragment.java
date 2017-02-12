@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import org.json.JSONArray;
@@ -50,12 +51,11 @@ public class MovieFragment extends Fragment {
     final String HIGHEST_RATED_QUERY = "https://api.themoviedb.org/3/discover/movie?api_key=61e87f5514f6028779a53b20565c9a4c&vote_count.gte=500&sort_by=vote_average.desc";
     final String THUMBNAIL_QUERY = "https://image.tmdb.org/t/p/w154";
 
-    final int mColumnCount = 4;
-
     private boolean userSelected = false;
 
     MyMovieRecyclerViewAdapter mMyMovieRecyclerViewAdapter;
     RecyclerView recyclerView;
+    ProgressBar progressBar;
 
     List<MovieContent> mMovieList = new ArrayList<>();
 
@@ -79,7 +79,7 @@ public class MovieFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.movie_menu, menu);
         MenuItem filterItem = menu.findItem(R.id.movie_filter);
-        Spinner spinner = (Spinner)MenuItemCompat.getActionView(filterItem);
+        Spinner spinner = (Spinner) MenuItemCompat.getActionView(filterItem);
 
         spinner.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -92,12 +92,25 @@ public class MovieFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
                 //position == 0 is for Title placeholder
                 if (position == 1 && userSelected) {
+
+                    //Turn visibility off for recyclerview
+                    recyclerView.setVisibility(View.INVISIBLE);
+                    //Turn visibilty on for progressBar
+                    progressBar.setVisibility(View.VISIBLE);
+
                     sharedPreferences.edit().putString("filter", "popular").apply();
                     updateMovies();
                     userSelected = false;
                 } else if (position == 2 && userSelected) {
+
+                    //Turn visibility off for recyclerview
+                    recyclerView.setVisibility(View.INVISIBLE);
+                    //Turn visibilty on for progressBar
+                    progressBar.setVisibility(View.VISIBLE);
+
                     sharedPreferences.edit().putString("filter", "highest_rated").apply();
                     updateMovies();
                     userSelected = false;
@@ -123,13 +136,16 @@ public class MovieFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            recyclerView = (RecyclerView) view;
-            //recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            mMyMovieRecyclerViewAdapter = new MyMovieRecyclerViewAdapter(mMovieList, mListener);
-            recyclerView.setAdapter(mMyMovieRecyclerViewAdapter);
-        }
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        mMyMovieRecyclerViewAdapter = new MyMovieRecyclerViewAdapter(mMovieList, mListener);
+        recyclerView.setAdapter(mMyMovieRecyclerViewAdapter);
+        recyclerView.setVisibility(View.INVISIBLE);
+
+        //Set progressBar
+        progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
+
         return view;
     }
 
@@ -224,15 +240,14 @@ public class MovieFragment extends Fragment {
                 try {
                     String urlString = THUMBNAIL_QUERY + poster_path;
                     URL url = new URL(urlString);
-                    posterBitmap = BitmapFactory.decodeStream((InputStream)url.getContent());
+                    posterBitmap = BitmapFactory.decodeStream((InputStream) url.getContent());
                     Log.d(LOG_TAG, posterBitmap.toString());
 
-                } catch (IOException e)
-                {
+                } catch (IOException e) {
                     Log.e(LOG_TAG, e.getMessage());
                 }
 
-                tempMovieContent = new MovieContent(posterBitmap, poster_path,title,vote_average,release_date,overview);
+                tempMovieContent = new MovieContent(posterBitmap, poster_path, title, vote_average, release_date, overview);
 
                 movieList.add(tempMovieContent);
             }
@@ -287,7 +302,7 @@ public class MovieFragment extends Fragment {
                 // If the code didn't successfully get the movie data, there's no point in attempting
                 // to parse it.
                 return null;
-            } finally{
+            } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
                 }
@@ -315,6 +330,8 @@ public class MovieFragment extends Fragment {
             mMovieList.clear();
             mMovieList.addAll(movieContents);
             mMyMovieRecyclerViewAdapter.notifyDataSetChanged();
+            progressBar.setVisibility(View.INVISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
             Log.d(LOG_TAG, Integer.toString(mMovieList.size()));
             //TODO : Update recyclerView
         }

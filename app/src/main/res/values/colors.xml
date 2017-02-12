@@ -6,4 +6,5 @@
     <color name="colorBackground">#252525</color>
     <color name="colorDetailsBackground">#c9252525</color>
     <color name="colorDetailsText">#ffffff</color>
+    <color name="progressBarColor">#ffffff</color>
 </resources>

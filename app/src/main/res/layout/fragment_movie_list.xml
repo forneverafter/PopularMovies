@@ -1,15 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list"
     android:name="me.winstonbrown.popularmovies.MovieFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
-    app:layoutManager="GridLayoutManager"
-    app:spanCount="3"
-    tools:context="me.winstonbrown.popularmovies.MovieFragment"
-    tools:listitem="@layout/fragment_movie" />
+    tools:context="me.winstonbrown.popularmovies.MovieFragment">
+
+    <ProgressBar
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_gravity="center"
+        tools:visibility="visible"
+        android:indeterminateDrawable="@drawable/progress"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        app:layoutManager="GridLayoutManager"
+        app:spanCount="3"
+        tools:listitem="@layout/fragment_movie"
+        android:visibility="invisible" />
+</FrameLayout>
