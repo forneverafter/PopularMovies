@@ -164,8 +164,6 @@ public class MovieFragment extends Fragment {
         if (query != Uri.EMPTY) {
             fetchMoviesTask.execute(query);
         }
-        //recyclerView.invalidate();
-        //mMyMovieRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -195,8 +193,7 @@ public class MovieFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
+    interface OnListFragmentInteractionListener {
         void onListFragmentInteraction(MovieContent item);
     }
 
@@ -277,7 +274,7 @@ public class MovieFragment extends Fragment {
 
                 // Read the input stream into a String
                 InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
                 if (inputStream == null) {
                     // Nothing to do.
                     return null;
@@ -333,7 +330,6 @@ public class MovieFragment extends Fragment {
             progressBar.setVisibility(View.INVISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
             Log.d(LOG_TAG, Integer.toString(mMovieList.size()));
-            //TODO : Update recyclerView
         }
     }
 }
