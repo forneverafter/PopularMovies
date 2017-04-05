@@ -47,8 +47,8 @@ import java.util.List;
 public class MovieFragment extends Fragment {
 
     final String LOG_TAG = "MovieFragment ::::";
-    final String POPULAR_QUERY = "https://api.themoviedb.org/3/discover/movie?api_key=61e87f5514f6028779a53b20565c9a4c&language=en-US&sort_by=popularity.desc";
-    final String HIGHEST_RATED_QUERY = "https://api.themoviedb.org/3/discover/movie?api_key=61e87f5514f6028779a53b20565c9a4c&vote_count.gte=500&sort_by=vote_average.desc";
+    final String POPULAR_QUERY = "https://api.themoviedb.org/3/discover/movie?api_key=" + BuildConfig.TMDB_API_KEY + "&language=en-US&sort_by=popularity.desc";
+    final String HIGHEST_RATED_QUERY = "https://api.themoviedb.org/3/discover/movie?api_key=" + BuildConfig.TMDB_API_KEY + "&vote_count.gte=500&sort_by=vote_average.desc";
     final String THUMBNAIL_QUERY = "https://image.tmdb.org/t/p/w154";
 
     private boolean userSelected = false;
@@ -81,6 +81,8 @@ public class MovieFragment extends Fragment {
         MenuItem filterItem = menu.findItem(R.id.movie_filter);
         Spinner spinner = (Spinner) MenuItemCompat.getActionView(filterItem);
 
+        // In order to start with nothing selected you have to make
+        // check that the view was touched by the user
         spinner.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
